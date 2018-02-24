@@ -35,8 +35,8 @@ def response_parse(resp, tree):
     return obj.getText()
 
 def login(client, username, password):
-    """This function should, given a username and password, log in and return
-    a session ID (as a string)."""
+    """This function should, given a username and password, log in to the TCC
+    Mobile API v2 service and return a session ID as a string."""
 
     args = {
         'username': username,
@@ -65,20 +65,30 @@ def login(client, username, password):
         raise "Login failed."
 
 def thermostat_stats(resp):
-    ret_dict = {}
+    """Given a SOAP response containing thermostat information, return a
+    dictionary containing temperature details."""
 
+    ret_dict = {}
     attrs = ['GetThermostatResponse', 'GetThermostatResult',
         'Thermostat', 'UI']
 
     current_temp = response_parse(resp, attrs+['DispTemperature'])
-    outdoor_temp = response_parse(resp, attrs+['OutdoorTemp'])
+    #outdoor_temp = response_parse(resp, attrs+['OutdoorTemp'])
 
     ret_dict['current_temp'] = float(current_temp)
-    #ret_dict['outdoor_temp'] = float(outdoor_temp)
 
     return ret_dict
 
 def save_stats(stats, if_config):
+    """Save a dictionary of statistics to an InfluxDB database.
+
+    Keyword arguments:
+    stats -- A dictionary containing our statistics.
+    if_config -- Configuration elements for talking to InfluxDB
+
+    Returns:
+    None"""
+
     # Instantiate our client connection.
     client = InfluxDBClient(host=if_config['host'], port=if_config['port'],
         username=if_config['username'], password=if_config['password'], 
@@ -105,7 +115,7 @@ def save_stats(stats, if_config):
     client.close()
 
 def main():
-    # Cuz we're using a self signed certificate...
+    # Our InfluxDB uses HTTPS, but is using a self-signed certificate.
     urllib3.disable_warnings()
 
     # Load our configuration file.
@@ -151,7 +161,7 @@ def main():
     # Save statistics to database.
     save_stats(stats, if_config)
 
-    # Logout...
+    # Log out of the Honeywell TCC API...
     client.service.LogOff(session_id)
 
 if __name__ == '__main__':
