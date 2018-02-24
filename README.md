@@ -3,6 +3,8 @@ A script I use to gather statistics from my Honeywell Wifi 9000 thermostat and t
 
 I use Dark Sky to track outside temperature since I found that the Honeywell doesn't seem to be super accurate (it relies on a third party weather service also, but it seems to update only very infrequently).  Dark Sky lets you query their service for free up to 1000 times a day.  I poll once every five minutes so this works out nicely.
 
+The script was developed on CentOS 7's built-in Python 2.7.5.  All Python modules were either installed via yum/EPEL or pip.
+
 I store the data in an InfluxDB database and visualize it via Grafana and Chronograf.
 
 ## Python Modules Needed
