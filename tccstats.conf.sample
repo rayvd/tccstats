@@ -1,0 +1,15 @@
+[honeywell]
+username = username@username.com
+password = password
+
+[darksky]
+apikey = rfjaojo3jo2j238fjafj28302488436d
+lat = 31.5418
+long = -125.2341
+
+[influxdb]
+host = localhost
+port = 8086
+username = username
+password = password
+database = dbname
