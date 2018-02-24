@@ -10,7 +10,6 @@ import sys
 import urllib3
 import ConfigParser
 
-from datetime import datetime
 from suds.client import Client
 from darksky import forecast
 from influxdb import InfluxDBClient
