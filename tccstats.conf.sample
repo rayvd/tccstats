@@ -1,6 +1,10 @@
 [honeywell]
-username = username@username.com
-password = password
+tokenfile = /path/to/file.json
+client_id = <apikey> 
+client_secret = <secret>
+redirect_uri = <https://localhost/>
+authorization_url = https://mytotalconnectcomfort.com/Auth/OAuth/Authorize
+token_url = https://mytotalconnectcomfort.com/Auth/OAuth/Token
 
 [darksky]
 apikey = rfjaojo3jo2j238fjafj28302488436d

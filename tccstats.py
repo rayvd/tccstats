@@ -7,10 +7,11 @@
 
 import os
 import sys
+import tcc
 import urllib3
+import argparse
 import ConfigParser
 
-from suds.client import Client
 from darksky import forecast
 from influxdb import InfluxDBClient
 
@@ -34,36 +35,6 @@ def response_parse(resp, tree):
         obj = obj.getChild(x)
     return obj.getText()
 
-def login(client, username, password):
-    """This function should, given a username and password, log in to the TCC
-    Mobile API v2 service and return a session ID as a string."""
-
-    args = {
-        'username': username,
-        'password': password,
-        'applicationID': 'a0c7a795-ff44-4bcd-9a99-420fac57ff04',
-        'applicationVersion': '2',
-        'uiLanguage': 'English'
-    }
-
-    # Attempt to log in.
-    client.service.AuthenticateUserLogin(**args)
-    results = client.last_received()
-
-    # See if we've succeeded.
-    attrs = ["AuthenticateUserLoginResponse", "AuthenticateUserLoginResult", "Result"]
-    login_result = response_parse(results, attrs)
-
-    if login_result == "Success":
-        # Get our session ID.
-        attrs = ["AuthenticateUserLoginResponse", "AuthenticateUserLoginResult", "SessionID"]
-        session_id = response_parse(results, attrs)
-
-        return session_id
-    else:
-        print results
-        raise "Login failed."
-
 def thermostat_stats(resp):
     """Given a SOAP response containing thermostat information, return a
     dictionary containing temperature details."""
@@ -78,6 +49,7 @@ def thermostat_stats(resp):
     ret_dict['current_temp'] = float(current_temp)
 
     return ret_dict
+
 
 def save_stats(stats, if_config):
     """Save a dictionary of statistics to an InfluxDB database.
@@ -118,13 +90,14 @@ def main():
     # Our InfluxDB uses HTTPS, but is using a self-signed certificate.
     urllib3.disable_warnings()
 
+    stats = {}
+
     # Load our configuration file.
     config = ConfigParser.ConfigParser()
     config.read(CONFIG)
 
     # Get Honeywell related configuration options.
-    hw_username = config.get('honeywell', 'username')
-    hw_password = config.get('honeywell', 'password')
+    honeywell = config.items('honeywell')
 
     # Get Dark Sky API key and lat/long
     ds_apikey = config.get('darksky', 'apikey')
@@ -140,19 +113,8 @@ def main():
         'database': config.get('influxdb', 'database')
     }
 
-    # Set up our suds/SOAP connection and log in to retrieve a session ID.
-    client = Client(HW_URL)
-    session_id = login(client, hw_username, hw_password)
-
-    # Get our Thermostat ID
-    attrs = ['GetLocationsResponse', 'GetLocationsResult', 'Locations', 
-        'LocationInfo', 'Thermostats', 'ThermostatInfo', 'ThermostatID']
-    client.service.GetLocations(session_id)
-    thermostat_id = response_parse(client.last_received(), attrs)
-
-    # Get details on our thermostat.
-    client.service.GetThermostat(session_id, thermostat_id)
-    stats = thermostat_stats(client.last_received())
+    t = tcc.tcc(**dict(honeywell))
+    stats['current_temp'] = t.get_temp_indoor()
 
     # Get current temperature from Dark Sky
     ds_stats = forecast(ds_apikey, ds_lat, ds_long)
@@ -160,9 +122,6 @@ def main():
 
     # Save statistics to database.
     save_stats(stats, if_config)
-
-    # Log out of the Honeywell TCC API...
-    client.service.LogOff(session_id)
 
 if __name__ == '__main__':
     main()
