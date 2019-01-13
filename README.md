@@ -8,14 +8,29 @@ The script was developed on CentOS 7's built-in Python 2.7.5.  All Python module
 I store the data in an InfluxDB database and visualize it via Grafana and Chronograf.
 
 ## Python Modules Needed
-- python-suds
+- requests_oauthlib
+- requests
 - darksky
 - influxdb
 
-## Honeywell TCC API
-For the Wifi 9000 thermostat, you need to talk to your TCC account via the MobileV2 API.  It has a SOAP and HTTP interface.  From searching around, I found that the Application ID to use is **a0c7a795-ff44-4bcd-9a99-420fac57ff04**.
+## Usage
+Quick and dirty:
 
-You can view the API docs [here](https://tccna.honeywell.com/ws/MobileV2.asmx).
+- Copy tccstats.conf.sample to tccstats.conf.  Modify it as needed.
+- You'll need to authorize the script to run (will need to build this
+  functionality in)
+
+## Honeywell TCC API
+The generic Application ID I was using against the TCC MobileV2 API stopped
+working.  As such, I've modifed the code to use the [TCCP RESTful API](https://mytotalconnectcomfort.com/WebApi/Help/ApiIntroduction).
+
+To make calls against the TCC RESTful API, you need to contact Honeywell and
+ask them create you an Application.  They'll ask you for a callback URL and in
+return you'll receive an API key and secret.
+
+You'll also need to know the Device ID of your thermostat.  Currently you need
+to discover it manually via API calls (using cURL or Postman).  It's on my
+TODO list to enable the app to list all devices.
 
 ## Sample Graph (Chronograf)
 ![Sample Graph](./sample.png)
