@@ -15,41 +15,7 @@ import ConfigParser
 from darksky import forecast
 from influxdb import InfluxDBClient
 
-# Honeywell TCC SOAP API WSDL URL
-HW_URL = 'https://tccna.honeywell.com/ws/MobileV2.asmx?WSDL'
-
 CONFIG = "{}/tccstats.conf".format(os.path.dirname(os.path.realpath(__file__)))
-
-def response_parse(resp, tree):
-    """Return text value of a SOAP response body
-
-    Keyword arguments:
-    resp -- The response object
-    tree -- A list of SOAP response hierarchy elements
-
-    Returns:
-    A string"""
-
-    obj = resp.getChild("soap:Envelope").getChild("soap:Body")
-    for x in tree:
-        obj = obj.getChild(x)
-    return obj.getText()
-
-def thermostat_stats(resp):
-    """Given a SOAP response containing thermostat information, return a
-    dictionary containing temperature details."""
-
-    ret_dict = {}
-    attrs = ['GetThermostatResponse', 'GetThermostatResult',
-        'Thermostat', 'UI']
-
-    current_temp = response_parse(resp, attrs+['DispTemperature'])
-    #outdoor_temp = response_parse(resp, attrs+['OutdoorTemp'])
-
-    ret_dict['current_temp'] = float(current_temp)
-
-    return ret_dict
-
 
 def save_stats(stats, if_config):
     """Save a dictionary of statistics to an InfluxDB database.
