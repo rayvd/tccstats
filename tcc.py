@@ -1,9 +1,11 @@
 import json
-import httplib
 import oauthlib
 import requests_oauthlib
 
-httplib.HTTPConnection.debuglevel = 0
+#import logging
+#import httplib
+#httplib.HTTPConnection.debuglevel = 0
+#logging.basicConfig(level=logging.DEBUG)
 
 class tcc:
     def __init__(self, device_id, client_id=None, client_secret=None,
@@ -18,7 +20,7 @@ class tcc:
         self.token_url = token_url
         self.token_db = token_db
         self.auth_url=auth_url
-        self.scope = scope or 'Basic Power'
+        self.scope = scope or ['Basic Power']
 
         self.oauth = requests_oauthlib.OAuth2Session(
             self.client_id,
@@ -58,6 +60,8 @@ class tcc:
             self.oauth.token=self.token_dict
 
     def get_temp_indoor(self):
+        """Returns the current indoor temperature."""
+
         device_url = "https://mytotalconnectcomfort.com/WebApi/api/devices/%s?allData=True" % self.device_id
 
         try:

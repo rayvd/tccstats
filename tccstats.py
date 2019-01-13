@@ -54,8 +54,10 @@ def save_stats(stats, if_config):
 
 def main():
     # Our InfluxDB uses HTTPS, but is using a self-signed certificate.
-    urllib3.disable_warnings()
+    # https://stackoverflow.com/questions/27981545/suppress-insecurerequestwarning-unverified-https-request-is-being-made-in-pytho
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+    # Initialize a dict to store our statistics.
     stats = {}
 
     # Load our configuration file.
@@ -79,6 +81,7 @@ def main():
         'database': config.get('influxdb', 'database')
     }
 
+    # Pull the indoor temperature from the thermostat.
     t = tcc.tcc(**dict(honeywell))
     stats['current_temp'] = t.get_temp_indoor()
 
