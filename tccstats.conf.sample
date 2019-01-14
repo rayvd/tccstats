@@ -1,4 +1,5 @@
 [honeywell]
+device_id = 12345
 tokenfile = /path/to/file.json
 client_id = <apikey> 
 client_secret = <secret>
