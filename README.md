@@ -33,4 +33,4 @@ to discover it manually via API calls (using cURL or Postman).  It's on my
 TODO list to enable the app to list all devices.
 
 ## Sample Graph (Chronograf)
-![Sample Graph](./sample.png)
+![Sample Graph](./sample.jpg)
