@@ -87,7 +87,7 @@ def main():
 
     # Get current temperature from Dark Sky
     ds_stats = forecast(ds_apikey, ds_lat, ds_long)
-    stats['outdoor_temp'] = ds_stats.currently.temperature
+    stats['outdoor_temp'] = float(ds_stats.currently.temperature)
 
     # Save statistics to database.
     save_stats(stats, if_config)
