@@ -1,10 +1,10 @@
 [honeywell]
 device_id = 12345
-tokenfile = /path/to/file.json
+token_db = /path/to/file.json
 client_id = <apikey> 
 client_secret = <secret>
 redirect_uri = <https://localhost/>
-authorization_url = https://mytotalconnectcomfort.com/Auth/OAuth/Authorize
+auth_url = https://mytotalconnectcomfort.com/Auth/OAuth/Authorize
 token_url = https://mytotalconnectcomfort.com/Auth/OAuth/Token
 
 [darksky]

@@ -33,19 +33,21 @@ class tcc:
 
         # Do we need to intitialize our tokens?
         if token_init:
-            self._init_tokens(self.auth_url)
+            self._init_tokens()
         else:
             self._load_tokens()
 
     def _init_tokens(self):
-        url, state = oauth.authorization_url(self.auth_url)
+        url, state = self.oauth.authorization_url(self.auth_url)
 
         print "Please visit %s and authorize access." % url
         auth_response = raw_input("Enter the authorization URL received: ")
 
-        self.oauth.fetch_token(self.token_url,
+        self.token_dict = self.oauth.fetch_token(self.token_url,
             authorization_response=auth_response,
             client_secret=self.client_secret)
+
+        self._update_tokens(self.token_dict)
 
     def _load_tokens(self):
         with open(self.token_db, 'r') as infile:

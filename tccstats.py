@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 #
 # Retrieve temperature stats from our Honeywell Wifi 9000 thermometer, outdoor
 # temperature from Dark Sky and then store in our InfluxDB database for
@@ -57,6 +57,11 @@ def main():
     # https://stackoverflow.com/questions/27981545/suppress-insecurerequestwarning-unverified-https-request-is-being-made-in-pytho
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+    # We accept --init as a parameter
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--init', dest='token_init', action='store_true')
+    args = parser.parse_args()
+
     # Initialize a dict to store our statistics.
     stats = {}
 
@@ -82,7 +87,12 @@ def main():
     }
 
     # Pull the indoor temperature from the thermostat.
-    t = tcc.tcc(**dict(honeywell))
+    if args.token_init:
+        t = tcc.tcc(token_init=True, **dict(honeywell))
+    else:
+        t = tcc.tcc(**dict(honeywell))
+
+    # Read current indoor temperature
     stats['current_temp'] = t.get_temp_indoor()
 
     # Get current temperature from Dark Sky

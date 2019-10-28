@@ -10,7 +10,7 @@ I store the data in an InfluxDB database and visualize it via Grafana and Chrono
 ## Python Modules Needed
 - requests_oauthlib
 - requests
-- darksky
+- [darkskylib](https://pypi.org/project/darkskylib/)
 - influxdb
 
 ## Usage
