@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 #
 # Retrieve temperature stats from our Honeywell Wifi 9000 thermometer, outdoor
-# temperature from Dark Sky and then store in our InfluxDB database for
+# temperature from Pirate Weather and then store in our InfluxDB database for
 # display in Grafana.
 #
 
@@ -73,7 +73,7 @@ def main():
     # Get Honeywell related configuration options.
     honeywell = config.items('honeywell')
 
-    # Get Dark Sky API key and lat/long
+    # Get Pirate Weather API key and lat/long
     pw_apikey = config.get('pirateweather', 'apikey')
     pw_lat = config.getfloat('pirateweather', 'lat')
     pw_long = config.getfloat('pirateweather', 'long')
