@@ -10,12 +10,13 @@ import sys
 import tcc
 import urllib3
 import argparse
+import requests
 import ConfigParser
 
-from darksky import forecast
 from influxdb import InfluxDBClient
 
 CONFIG = "{}/tccstats.conf".format(os.path.dirname(os.path.realpath(__file__)))
+PW_API_URL = "https://api.pirateweather.net/forecast/"
 
 def save_stats(stats, if_config):
     """Save a dictionary of statistics to an InfluxDB database.
@@ -73,9 +74,9 @@ def main():
     honeywell = config.items('honeywell')
 
     # Get Dark Sky API key and lat/long
-    ds_apikey = config.get('darksky', 'apikey')
-    ds_lat = config.getfloat('darksky', 'lat')
-    ds_long = config.getfloat('darksky', 'long')
+    pw_apikey = config.get('pirateweather', 'apikey')
+    pw_lat = config.getfloat('pirateweather', 'lat')
+    pw_long = config.getfloat('pirateweather', 'long')
 
     # Get our InfluxDB Settings
     if_config = {
@@ -95,9 +96,9 @@ def main():
     # Read current indoor temperature
     stats['current_temp'] = t.get_temp_indoor()
 
-    # Get current temperature from Dark Sky
-    ds_stats = forecast(ds_apikey, ds_lat, ds_long)
-    stats['outdoor_temp'] = float(ds_stats.currently.temperature)
+    # Get current temperature from Pirate Weather 
+    pw_url = "{}{}/{},{}".format(PW_API_URL, pw_apikey, pw_lat, pw_long)
+    stats['outdoor_temp'] = requests.get(pw_url).json()['currently']['temperature']
 
     # Save statistics to database.
     save_stats(stats, if_config)

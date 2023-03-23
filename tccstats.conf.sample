@@ -7,7 +7,7 @@ redirect_uri = <https://localhost/>
 auth_url = https://mytotalconnectcomfort.com/Auth/OAuth/Authorize
 token_url = https://mytotalconnectcomfort.com/Auth/OAuth/Token
 
-[darksky]
+[pirateweather]
 apikey = rfjaojo3jo2j238fjafj28302488436d
 lat = 31.5418
 long = -125.2341

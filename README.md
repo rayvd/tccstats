@@ -1,7 +1,7 @@
 # tccstats
-A script I use to gather statistics from my Honeywell Wifi 9000 thermostat and the Dark Sky weather service.  It's probably not too useful to anyone else, but could serve as a reference for talking to these services.
+A script I use to gather statistics from my Honeywell Wifi 9000 thermostat and the Pirate Weather weather service.  It's probably not too useful to anyone else, but could serve as a reference for talking to these services.
 
-I use Dark Sky to track outside temperature since I found that the Honeywell doesn't seem to be super accurate (it relies on a third party weather service also, but it seems to update only very infrequently).  Dark Sky lets you query their service for free up to 1000 times a day.  I poll once every five minutes so this works out nicely.
+I use Pirate Weather to track outside temperature since I found that the Honeywell doesn't seem to be super accurate (it relies on a third party weather service also, but it seems to update only very infrequently).  Pirate Weather lets you query their service for free up to 10,000 times a month.  A previous version of this script relied on Dark Sky, which was discontinued in March, 2023.
 
 The script was developed on CentOS 7's built-in Python 2.7.5.  All Python modules were either installed via yum/EPEL or pip.
 
@@ -10,7 +10,6 @@ I store the data in an InfluxDB database and visualize it via Grafana and Chrono
 ## Python Modules Needed
 - requests_oauthlib
 - requests
-- [darkskylib](https://pypi.org/project/darkskylib/)
 - influxdb
 
 ## Usage
